@@ -20,14 +20,15 @@ public class Main {
         person = em.find(Person.class, 1L);
         System.out.println("person = " + person);
 
+        person.setFirstName("NewFirstName");
+
         person = em.find(Person.class, 1L);
         System.out.println("person = " + person);
 
         em.getTransaction().commit();
 
 
-        person.setFirstName("NewFirstName");
-        System.out.println("person = " + person);
+
 
 
         em.close();
