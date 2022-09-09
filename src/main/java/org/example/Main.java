@@ -10,10 +10,14 @@ public class Main {
         EntityManagerFactory factory = Persistence.createEntityManagerFactory(
                 "MySQL-persistence-unit");
 
+
         Person person = createNewPerson(factory);
         findInSession(factory);
 //        deleteDetached(person, factory); // exception
         deleteAttached(person, factory); // ok
+
+
+        factory.close();
     }
 
     /**
@@ -54,6 +58,7 @@ public class Main {
         EntityManager em = factory.createEntityManager();
         em.getTransaction().begin();
 
+
         Person person = em.find(Person.class, 1L);
         System.out.println("person = " + person);
 
@@ -61,6 +66,7 @@ public class Main {
 
         person = em.find(Person.class, 1L);
         System.out.println("person = " + person);
+
 
         em.getTransaction().commit();
         em.close();
@@ -75,9 +81,11 @@ public class Main {
         EntityManager em = factory.createEntityManager();
         em.getTransaction().begin();
 
+
         em.persist(person);
         person = em.find(Person.class, 1L);
         System.out.println("person = " + person);
+
 
         em.getTransaction().commit();
         em.close();
