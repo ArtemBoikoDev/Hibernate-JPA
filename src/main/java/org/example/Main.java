@@ -3,8 +3,10 @@ package org.example;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import lombok.extern.slf4j.Slf4j;
 import org.example.entity.Person;
 
+@Slf4j
 public class Main {
     public static void main(String[] args) {
         EntityManagerFactory factory = Persistence.createEntityManagerFactory(
@@ -25,15 +27,21 @@ public class Main {
      */
     private static void deleteAttached(Person person, EntityManagerFactory factory) {
         EntityManager em = factory.createEntityManager();
-        em.getTransaction().begin();
+        try {
+            em.getTransaction().begin();
 
 
-        Person attachedToSessionPerson = em.merge(person);
-        em.remove(attachedToSessionPerson);
+            Person attachedToSessionPerson = em.merge(person);
+            em.remove(attachedToSessionPerson);
 
 
-        em.getTransaction().commit();
-        em.close();
+            em.getTransaction().commit();
+        } catch (Exception exception) {
+            em.getTransaction().rollback();
+            log.error("Cannot execute method 'deleteAttached(Person person, EntityManagerFactory factory)'");
+        } finally {
+            em.close();
+        }
     }
 
     /**
@@ -41,14 +49,20 @@ public class Main {
      */
     private static void deleteDetached(Person person, EntityManagerFactory factory) {
         EntityManager em = factory.createEntityManager();
-        em.getTransaction().begin();
+        try {
+            em.getTransaction().begin();
 
 
-        em.remove(person);
+            em.remove(person);
 
 
-        em.getTransaction().commit();
-        em.close();
+            em.getTransaction().commit();
+        } catch (Exception exception) {
+            em.getTransaction().rollback();
+            log.error("Cannot execute method 'deleteDetached(Person person, EntityManagerFactory factory)'");
+        } finally {
+            em.close();
+        }
     }
 
     /**
@@ -56,20 +70,26 @@ public class Main {
      */
     private static void findInSession(EntityManagerFactory factory) {
         EntityManager em = factory.createEntityManager();
-        em.getTransaction().begin();
+        try {
+            em.getTransaction().begin();
 
 
-        Person person = em.find(Person.class, 1L);
-        System.out.println("person = " + person);
+            Person person = em.find(Person.class, 1L);
+            log.info("person = {}", person);
 
-        person.setFirstName("NewFirstName");
+            person.setFirstName("NewFirstName");
 
-        person = em.find(Person.class, 1L);
-        System.out.println("person = " + person);
+            person = em.find(Person.class, 1L);
+            log.info("person = {}", person);
 
 
-        em.getTransaction().commit();
-        em.close();
+            em.getTransaction().commit();
+        } catch (Exception exception) {
+            em.getTransaction().rollback();
+            log.error("Cannot execute method 'findInSession(EntityManagerFactory factory)'");
+        } finally {
+            em.close();
+        }
     }
 
     public static Person createNewPerson(EntityManagerFactory factory) {
@@ -79,16 +99,22 @@ public class Main {
 
 
         EntityManager em = factory.createEntityManager();
-        em.getTransaction().begin();
+        try {
+            em.getTransaction().begin();
 
 
-        em.persist(person);
-        person = em.find(Person.class, 1L);
-        System.out.println("person = " + person);
+            em.persist(person);
+            person = em.find(Person.class, 1L);
+            log.info("person = {}", person);
 
 
-        em.getTransaction().commit();
-        em.close();
+            em.getTransaction().commit();
+        } catch (Exception exception) {
+            em.getTransaction().rollback();
+            log.error("Cannot execute method 'findInSession(EntityManagerFactory factory)'");
+        } finally {
+            em.close();
+        }
         return person;
     }
 }
