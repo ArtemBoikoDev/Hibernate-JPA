@@ -9,9 +9,8 @@ import org.example.entity.Person;
 @Slf4j
 public class Main {
     public static void main(String[] args) {
-        EntityManagerFactory factory = Persistence.createEntityManagerFactory(
-                "MySQL-persistence-unit");
-
+        EntityManagerFactory factory =
+                Persistence.createEntityManagerFactory("MySQL-persistence-unit");
 
         Person person = createNewPerson(factory);
         findInSession(factory);
