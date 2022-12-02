@@ -36,11 +36,12 @@ public class Person {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Person person = (Person) o;
-        return id.equals(person.id);
+        return id != null && id.equals(person.id);
     }
 
     @Override
     public int hashCode() {
+        if (id == null) return getClass().hashCode();
         return Objects.hash(id);
     }
 }
